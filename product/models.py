@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.postgres.search import SearchVector, SearchVectorField
 # Create your models here.
 # products/models.py
 
