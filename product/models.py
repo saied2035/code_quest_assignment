@@ -28,9 +28,9 @@ class NutritionFact(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=200)
     brands = models.ManyToManyField(
-        Brand, on_delete=models.PROTECT, related_name='products')
+        Brand, related_name='products')
     categories = models.ManyToManyField(
-        Category, on_delete=models.PROTECT, related_name='products')
+        Category, related_name='products')
     nutrition_facts = models.ManyToManyField(
         NutritionFact,
         through='ProductNutrition',
