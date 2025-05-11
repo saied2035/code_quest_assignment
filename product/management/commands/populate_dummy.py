@@ -26,9 +26,10 @@ class Command(BaseCommand):
         for _ in range(count):
             product = Product.objects.create(
                 name=fake.catch_phrase(),
-                brand=random.choice(brands),
-                category=random.choice(categories),
             )
+            product.brands.set(random.sample(brands, k=random.randint(1, 3)))
+            product.categories.set(random.sample(
+                categories, k=random.randint(1, 3)))
             self._add_nutrition_facts(product, nutrition_facts)
 
         self.stdout.write(self.style.SUCCESS(
