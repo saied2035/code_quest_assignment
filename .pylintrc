@@ -1,0 +1,6 @@
+[MASTER]
+# Load the Django plugin
+load-plugins=pylint_django
+
+[MESSAGES CONTROL]
+disable=no-member 
