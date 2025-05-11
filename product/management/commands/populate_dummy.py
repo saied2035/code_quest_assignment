@@ -32,7 +32,7 @@ class Command(BaseCommand):
             self._add_nutrition_facts(product, nutrition_facts)
 
         self.stdout.write(self.style.SUCCESS(
-            f"✓ Created {count} products with nutrition facts!"
+            f"✓ Created {count} products with categories, brands, and nutrition facts!"
         ))
 
     def _create_brands(self, fake):
