@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.postgres.search import SearchVector, SearchVectorField
 # Create your models here.
 # products/models.py
 
@@ -28,9 +28,9 @@ class NutritionFact(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=200)
-    brand = models.ForeignKey(
+    brands = models.ManyToManyField(
         Brand, on_delete=models.PROTECT, related_name='products')
-    category = models.ForeignKey(
+    categories = models.ManyToManyField(
         Category, on_delete=models.PROTECT, related_name='products')
     nutrition_facts = models.ManyToManyField(
         NutritionFact,
