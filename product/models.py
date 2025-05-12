@@ -1,6 +1,5 @@
 from django.db import models
-# Create your models here.
-# products/models.py
+from .managers import ProductManager
 
 
 class Brand(models.Model):
@@ -36,6 +35,8 @@ class Product(models.Model):
         through='ProductNutrition',
         related_name='products',
     )
+
+    objects = ProductManager()
 
     def __str__(self):
         return f"{self.name}"
