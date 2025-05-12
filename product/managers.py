@@ -3,8 +3,9 @@
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db import models
 
+
 class ProductQuerySet(models.QuerySet):
-    def fuzzy(self, term, threshold=0.3):
+    def fuzzy(self, term, threshold=0.13):
         return (
             self
             .annotate(similarity=TrigramSimilarity('name', term))
@@ -12,9 +13,10 @@ class ProductQuerySet(models.QuerySet):
             .order_by('-similarity')
         )
 
+
 class ProductManager(models.Manager):
     def get_queryset(self):
         return ProductQuerySet(self.model, using=self._db)
 
     def fuzzy_search(self, term, **kwargs):
-        return self.get_queryset().fuzzy(term)
+        return self.get_queryset().fuzzy(term, **kwargs)
