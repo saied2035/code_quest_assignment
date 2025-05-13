@@ -1,6 +1,7 @@
 from django.db import models
 from .managers import ProductManager
-
+from django.contrib.postgres.search import SearchVectorField
+from django.contrib.postgres.indexes import GinIndex
 
 class Brand(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -35,8 +36,12 @@ class Product(models.Model):
         through='ProductNutrition',
         related_name='products',
     )
+    search_vector = SearchVectorField(null=True)
 
     objects = ProductManager()
+
+    class Meta:
+        indexes = [GinIndex(fields=['search_vector'])]
 
     def __str__(self):
         return f"{self.name}"
