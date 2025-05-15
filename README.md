@@ -153,7 +153,7 @@ GET /api/products/search/
                 }
             ]
         },
-        /*rest of the result in page 1*/
+        //rest of the result in page 1
     ]
 } 
 ```
@@ -176,8 +176,6 @@ GET /api/products/search/
 - Responsive mobile-first layout
 
 - Instant clear of previous results on typing
-
-- Adjustable similarity threshold slider
 
 - Pagination
 
