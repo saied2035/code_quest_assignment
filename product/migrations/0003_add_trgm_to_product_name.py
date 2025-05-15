@@ -3,7 +3,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('product', '0002_enable_pg_trgm'),
+        ('product', '0002_enable_pg_trgm_and_unaccent'),
     ]
 
     operations = [

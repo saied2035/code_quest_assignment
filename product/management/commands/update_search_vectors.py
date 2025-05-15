@@ -1,5 +1,5 @@
 # product/management/commands/update_search_vectors.py
-
+from django.db.models import Func, F
 from django.core.management.base import BaseCommand
 from django.contrib.postgres.search import SearchVector
 from product.models import Product
@@ -11,8 +11,10 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         products = Product.objects.annotate(
             search_vector_combined=(
-                SearchVector('name', config='english') +
-                SearchVector('name', config='arabic')
+                SearchVector(Func(F('name'), function='unaccent'),
+                             config='english')
+                + SearchVector(Func(F('name'), function='unaccent'),
+                               config='arabic')
             )
         )
 

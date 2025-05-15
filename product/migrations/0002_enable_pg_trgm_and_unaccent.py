@@ -1,4 +1,4 @@
-from django.contrib.postgres.operations import TrigramExtension
+from django.contrib.postgres.operations import TrigramExtension, UnaccentExtension
 from django.db import migrations
 
 class Migration(migrations.Migration):
@@ -7,5 +7,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        TrigramExtension(),    # installs the pg_trgm extension
+        TrigramExtension(),
+        UnaccentExtension(),
     ]

@@ -1,8 +1,7 @@
 # product/managers.py
 import re
 from django.db import models
-from django.db.models import Q, Value, F
-from django.db.models.functions import Lower
+from django.db.models import Q, Value, F, Func
 from django.contrib.postgres.search import (
     SearchQuery, SearchRank, TrigramSimilarity
 )
@@ -10,7 +9,8 @@ from django.contrib.postgres.search import (
 
 class ProductQuerySet(models.QuerySet):
     def smart_search(self, term, sim_threshold=0.3):
-        term_lower = term.lower()
+        term_lower = term.lower().strip()
+        unaccented = Func(Value(term_lower), function='unaccent')
 
         language_type = self._detect_language_type(term)
 
@@ -21,18 +21,18 @@ class ProductQuerySet(models.QuerySet):
         else:
             config = "simple"
 
-        query = SearchQuery(term_lower, config=config)
+        query = SearchQuery(unaccented, config=config)
 
         return (
             self.annotate(
-                name_lower=Lower('name'),
-                sim=TrigramSimilarity(Lower('name'), Value(term_lower)),
-                rank=SearchRank(F('search_vector'), query)
+                name_unaccent=Func(F('name'), function='unaccent'),
+                sim=TrigramSimilarity('name_unaccent', unaccented),
+                rank=SearchRank(F('search_vector'), query),
             )
             .filter(
-                Q(name_lower__icontains=term_lower) |
-                Q(sim__gt=sim_threshold) |
-                Q(search_vector=query)
+                Q(name_unaccent__icontains=term_lower)
+                | Q(sim__gt=sim_threshold)
+                | Q(search_vector=query)
             )
             .order_by('-rank', '-sim')
         )
