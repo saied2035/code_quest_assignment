@@ -9,7 +9,7 @@ from django.contrib.postgres.search import (
 
 
 class ProductQuerySet(models.QuerySet):
-    def smart_search(self, term, sim_threshold=0.1):
+    def smart_search(self, term, sim_threshold=0.3):
         term_lower = term.lower()
 
         language_type = self._detect_language_type(term)
