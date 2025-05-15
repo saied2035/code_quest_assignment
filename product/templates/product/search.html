@@ -1,0 +1,75 @@
+{% extends "base.html" %} 
+{% load static %} 
+{% block title %}Search Products{% endblock %} 
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'product/style.css' %}" />
+{% endblock %} 
+
+{% block content %}
+<form method="get" class="search-form" id="search-form">
+  <input
+    type="text"
+    name="q"
+    type="text"
+    value="{{ q }}"
+    placeholder="Search…"
+    required
+    autofocus
+  />
+  <button type="submit">Search</button>
+</form>
+
+<div id="results">
+  {% if page_obj %}
+  <p>
+    Showing {{ page_obj.start_index }}–{{ page_obj.end_index }} of {{ page_obj.paginator.count }}
+  </p>
+  <ul class="product-list">
+    {% for p in page_obj %}
+    <li>{{ p.name }}</li>
+    {% empty %}
+    <li>No results for “{{ q }}”.</li>
+    {% endfor %}
+  </ul>
+  <div class="pagination">
+    {% if page_obj.has_previous %}
+    <a href="?q={{ q }}&sim={{ sim }}&page={{ page_obj.previous_page_number }}"
+      >← Previous</a
+    >
+    {% endif %}
+    <span
+      >Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span
+    >
+    {% if page_obj.has_next %}
+    <a href="?q={{ q }}&sim={{ sim }}&page={{ page_obj.next_page_number }}"
+      >Next →</a
+    >
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+  (() => {
+    const inputQ = document.querySelector('input[name="q"]');
+    const resultsDiv = document.getElementById("results");
+
+    const clearResults = () => {
+      while (resultsDiv.firstChild) {
+        resultsDiv.removeChild(resultsDiv.firstChild);
+      }
+    };
+
+    inputQ.addEventListener("input", clearResults);
+
+    if (!inputQ) return;
+
+    // Focus the input…
+    inputQ.focus();
+    // …and put the caret at the very start
+    const len = inputQ.value.length;
+    inputQ.setSelectionRange(len, len);
+  })();
+</script>
+{% endblock %}
