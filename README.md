@@ -60,6 +60,16 @@ python manage.py migrate
 ```bash
 python manage.py populate_dummy --count number # py manage.py populate_dummy --count 10000
 ```
+If you have data:
+
+- add a field to your product model:
+```py
+search_vector = SearchVectorField(null=True)
+```
+- run this command:
+```bash 
+python manage.py update_search_vectors 
+```
 
 ### 5. Run the Dev Server
 
