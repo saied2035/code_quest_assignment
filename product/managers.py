@@ -12,16 +12,9 @@ class ProductQuerySet(models.QuerySet):
         term_lower = term.lower().strip()
         unaccented = Func(Value(term_lower), function='unaccent')
 
-        language_type = self._detect_language_type(term)
+        config = self._detect_language_type(term)
 
-        if language_type == "arabic":
-            config = "arabic"
-        elif language_type == "english":
-            config = "english"
-        else:
-            config = "simple"
-
-        query = SearchQuery(unaccented, config=config)
+        query = SearchQuery(term_lower, config=config)
 
         return (
             self.annotate(
@@ -34,7 +27,7 @@ class ProductQuerySet(models.QuerySet):
                 | Q(sim__gt=sim_threshold)
                 | Q(search_vector=query)
             )
-            .order_by('-rank', '-sim')
+            .order_by('-rank', '-sim').distinct()
         )
 
     def _detect_language_type(self, text) -> str:
@@ -43,15 +36,14 @@ class ProductQuerySet(models.QuerySet):
 
         has_arabic = bool(arabic_chars.search(text))
         has_english = bool(english_chars.search(text))
-
+        config = "english"
         if has_arabic and has_english:
-            return "mixed"
+            config = "simple"
         elif has_arabic:
-            return "arabic"
+            config = "arabic"
         elif has_english:
-            return "english"
-        else:
-            return "unknown"
+            config = "english"
+        return config
 
 
 class ProductManager(models.Manager):
